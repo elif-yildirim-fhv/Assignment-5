@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "GAME")
 public class Game {
 
 	@Id
@@ -13,7 +14,10 @@ public class Game {
 
 	private Long boardId;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "GAME_PLAYER_IDS", 
+		joinColumns = @JoinColumn(name = "GAME_ID"))
+	@Column(name = "PLAYER_IDS")
 	private List<Long> playerIds = new ArrayList<>();
 
 	public Long getId() {

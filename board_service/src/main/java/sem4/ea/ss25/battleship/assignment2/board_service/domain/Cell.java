@@ -13,8 +13,8 @@ public class Cell {
 
 	private int x;
 	private int y;
-	private boolean hasShip;
-	private boolean hit;
+	private boolean isOccupied;
+	private boolean isGuessed;
 
 	public Long getId() {
 		return id;
@@ -40,19 +40,19 @@ public class Cell {
 		this.y = y;
 	}
 
-	public boolean isHasShip() {
-		return hasShip;
+	public boolean isOccupied() {
+		return isOccupied;
 	}
 
-	public void setHasShip(boolean hasShip) {
-		this.hasShip = hasShip;
+	public void setOccupied(boolean occupied) {
+		isOccupied = occupied;
 	}
 
-	public boolean isHit() {
-		return hit;
+	public boolean isGuessed() {
+		return isGuessed;
 	}
 
-	public void setHit(boolean hit) {
-		this.hit = hit;
+	public void setGuessed(boolean guessed) {
+		isGuessed = guessed;
 	}
 }

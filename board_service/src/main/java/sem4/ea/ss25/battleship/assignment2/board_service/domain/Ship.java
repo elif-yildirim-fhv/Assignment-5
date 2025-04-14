@@ -11,6 +11,7 @@ public class Ship {
 	private Long id;
 
 	private int length;
+	private Long playerId;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Cell> cells = new ArrayList<>();
@@ -31,6 +32,14 @@ public class Ship {
 		this.length = length;
 	}
 
+	public Long getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(Long playerId) {
+		this.playerId = playerId;
+	}
+
 	public List<Cell> getCells() {
 		return cells;
 	}
@@ -41,7 +50,7 @@ public class Ship {
 
 	public boolean isDestroyed() {
 		for (Cell cell : cells) {
-			if (!cell.isHit()) {
+			if (!cell.isGuessed()) {
 				return false;
 			}
 		}

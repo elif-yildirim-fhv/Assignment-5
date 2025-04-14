@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sem4.ea.ss25.battleship.assignment2.game_service.client.BoardServiceClient;
-import sem4.ea.ss25.battleship.assignment2.game_service.client.PlayerServiceClient;
 import sem4.ea.ss25.battleship.assignment2.game_service.domain.Game;
 import sem4.ea.ss25.battleship.assignment2.game_service.dto.*;
 import sem4.ea.ss25.battleship.assignment2.game_service.repository.GameRepository;
@@ -30,9 +28,9 @@ public class GameService {
 	@CircuitBreaker(name = "boardServiceCB", fallbackMethod = "createGameFallback")
 	@Transactional
 	public GameDTO createGame() {
-		BoardDTO board = boardServiceClient.createBoard();
+		Long boardId = boardServiceClient.createBoard();
 		Game game = new Game();
-		game.setBoardId(board.id());
+		game.setBoardId(boardId);
 		game = gameRepository.save(game);
 		return new GameDTO(game.getId(), game.getBoardId(), List.of());
 	}
@@ -47,7 +45,7 @@ public class GameService {
 
 	@CircuitBreaker(name = "playerServiceCB", fallbackMethod = "addPlayerToGameFallback")
 	@Transactional
-	public void addPlayerToGame(Long gameId, Long playerId) {
+	public GameDTO addPlayerToGame(Long gameId, Long playerId) {
 		PlayerDTO playerDTO = playerServiceClient.getPlayer(playerId);
 		if (playerDTO == null) {
 			throw new RuntimeException("Player not found");
@@ -56,7 +54,9 @@ public class GameService {
 		Game game = gameRepository.findById(gameId)
 				.orElseThrow(() -> new RuntimeException("Game not found"));
 		game.addPlayerId(playerId);
-		gameRepository.save(game);
+		game = gameRepository.save(game);
+		
+		return new GameDTO(game.getId(), game.getBoardId(), game.getPlayerIds());
 	}
 
 	private void addPlayerToGameFallback(Long gameId, Long playerId, Exception ex) {
@@ -101,6 +101,19 @@ public class GameService {
 	public GameDTO getGame(Long gameId) {
 		Game game = gameRepository.findById(gameId)
 				.orElseThrow(() -> new RuntimeException("Game not found"));
+
+		// Verify that the board exists
+		if (game.getBoardId() != null && game.getBoardId() != -1L) {
+			try {
+				BoardDTO board = boardServiceClient.getBoard(game.getBoardId());
+				if (board != null && board.id() != null) {
+					log.info("Successfully verified board {} exists for game {}", game.getBoardId(), gameId);
+				}
+			} catch (Exception e) {
+				log.error("Failed to verify board {} for game {}", game.getBoardId(), gameId, e);
+				return new GameDTO(game.getId(), -1L, game.getPlayerIds());
+			}
+		}
 
 		return new GameDTO(game.getId(), game.getBoardId(), game.getPlayerIds());
 	}

@@ -4,5 +4,6 @@ import java.util.List;
 
 public record BoardDTO(
     Long id,
-    List<CellDTO> cells
+    List<CellDTO> cells,
+	List<ShipDTO> ships
 ) {}

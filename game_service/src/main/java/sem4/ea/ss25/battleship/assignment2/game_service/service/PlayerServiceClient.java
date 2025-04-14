@@ -1,4 +1,4 @@
-package sem4.ea.ss25.battleship.assignment2.game_service.client;
+package sem4.ea.ss25.battleship.assignment2.game_service.service;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;

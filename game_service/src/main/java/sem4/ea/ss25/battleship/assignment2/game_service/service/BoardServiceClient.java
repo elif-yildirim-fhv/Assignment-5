@@ -1,4 +1,4 @@
-package sem4.ea.ss25.battleship.assignment2.game_service.client;
+package sem4.ea.ss25.battleship.assignment2.game_service.service;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +9,7 @@ import sem4.ea.ss25.battleship.assignment2.game_service.dto.ShipDTO;
 public interface BoardServiceClient {
 
 	@PostMapping("/api/board/create")
-	BoardDTO createBoard();
+	Long createBoard();
 
 	@PostMapping("/api/board/placeShip")
 	ShipDTO placeShip(

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Battleship_Assigment_5.iml" filepath="$PROJECT_DIR$/.idea/Battleship_Assigment_5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api_gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api_gateway.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/board_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/board_service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/game_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/game_service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/player_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/player_service.main.iml" />
