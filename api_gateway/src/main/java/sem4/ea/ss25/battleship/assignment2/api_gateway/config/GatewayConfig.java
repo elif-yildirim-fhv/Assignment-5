@@ -19,22 +19,15 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // Game Service Routes
-                .route("game-service", r -> r.path("/api/game/**")
+                .route(r -> r.path("/api/game/**")
                         .uri("lb://game-service"))
-                
-                // Board Service Routes
-                .route("board-service", r -> r.path("/api/board/**")
+                .route(r -> r.path("/api/board/**")
                         .uri("lb://board-service"))
-                
-                // Player Service Routes
-                .route("player-service", r -> r.path("/api/player/**")
+                .route(r -> r.path("/api/player/**")
                         .uri("lb://player-service"))
-                
-                // Swagger UI routes
-                .route("openapi", r -> r.path("/v3/api-docs/**")
+                .route(r -> r.path("/swagger-ui/**")
                         .uri("http://localhost:8080"))
-                .route("swagger-ui", r -> r.path("/swagger-ui/**")
+                .route(r -> r.path("/v3/api-docs/**")
                         .uri("http://localhost:8080"))
                 .build();
     }

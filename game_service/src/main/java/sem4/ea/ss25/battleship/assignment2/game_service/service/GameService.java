@@ -2,8 +2,6 @@ package sem4.ea.ss25.battleship.assignment2.game_service.service;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sem4.ea.ss25.battleship.assignment2.game_service.domain.Game;
@@ -14,8 +12,6 @@ import java.util.List;
 
 @Service
 public class GameService {
-	private static final Logger log = LoggerFactory.getLogger(GameService.class);
-
 	@Autowired
 	private PlayerServiceClient playerServiceClient;
 
@@ -36,7 +32,6 @@ public class GameService {
 	}
 
 	private GameDTO createGameFallback(Exception ex) {
-		log.error("Failed to create game", ex);
 		Game game = new Game();
 		game.setBoardId(-1L);
 		game = gameRepository.save(game);
@@ -55,12 +50,11 @@ public class GameService {
 				.orElseThrow(() -> new RuntimeException("Game not found"));
 		game.addPlayerId(playerId);
 		game = gameRepository.save(game);
-		
+
 		return new GameDTO(game.getId(), game.getBoardId(), game.getPlayerIds());
 	}
 
 	private void addPlayerToGameFallback(Long gameId, Long playerId, Exception ex) {
-		log.error("Failed to add player {} to game {}", playerId, gameId, ex);
 	}
 
 	@CircuitBreaker(name = "boardServiceCB", fallbackMethod = "endGameFallback")
@@ -75,7 +69,6 @@ public class GameService {
 	}
 
 	private String endGameFallback(Long gameId, Exception ex) {
-		log.error("Failed to end game {}", gameId, ex);
 		return "Game ended with fallback due to service unavailability";
 	}
 
@@ -93,7 +86,6 @@ public class GameService {
 	}
 
 	private boolean checkGameOverFallback(Long gameId, Exception ex) {
-		log.error("Failed to check game over for game {}", gameId, ex);
 		return false;
 	}
 
@@ -102,15 +94,13 @@ public class GameService {
 		Game game = gameRepository.findById(gameId)
 				.orElseThrow(() -> new RuntimeException("Game not found"));
 
-		// Verify that the board exists
+
 		if (game.getBoardId() != null && game.getBoardId() != -1L) {
 			try {
 				BoardDTO board = boardServiceClient.getBoard(game.getBoardId());
 				if (board != null && board.id() != null) {
-					log.info("Successfully verified board {} exists for game {}", game.getBoardId(), gameId);
 				}
 			} catch (Exception e) {
-				log.error("Failed to verify board {} for game {}", game.getBoardId(), gameId, e);
 				return new GameDTO(game.getId(), -1L, game.getPlayerIds());
 			}
 		}
@@ -119,7 +109,6 @@ public class GameService {
 	}
 
 	private GameDTO getGameFallback(Long gameId, Exception ex) {
-		log.error("Failed to get game {}", gameId, ex);
 		return new GameDTO(-1L, -1L, List.of());
 	}
 }

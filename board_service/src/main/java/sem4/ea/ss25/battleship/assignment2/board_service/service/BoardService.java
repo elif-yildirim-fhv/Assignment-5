@@ -60,9 +60,23 @@ public class BoardService {
 
 		boolean isHit = cell.isOccupied();
 		cell.setGuessed(true);
+
+		if (isHit) {
+			Ship ship = board.getShips().stream()
+					.filter(s -> s.getCells().contains(cell))
+					.findFirst()
+					.orElse(null);
+
+			if (ship != null) {
+				ship.getCells().stream()
+						.filter(Cell::isGuessed)
+						.count();
+			}
+		}
+
 		boardRepository.save(board);
 
-		// Check if all ships are sunk
+
 		boolean isGameOver = board.getShips().stream()
 				.allMatch(ship -> ship.getCells().stream()
 						.allMatch(Cell::isGuessed));
